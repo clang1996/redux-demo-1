@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/redux/4.0.5/redux.min.js"></script>
+<script>
+	//1.dispatch一个action
+	const add1=() => {
+		store.dispatch({type: 'add', payload: 1});
+	};
+	const add2=() => {
+		store.dispatch({type: 'add', payload: 2});
+	};
+	const odd1=() => {
+		const oldState=store.getState();
+		if (oldState % 2 === 1) {
+			store.dispatch({type: 'add', payload: 1});
+		}
+	};
+	const sec1=() => {
+		setTimeout(() => {
+			store.dispatch({type: 'add', payload: 1});
+		}, 2000);
+	};
+	const render=(store) => {
+		let app=document.querySelector('#app');
+		app.innerHTML=`
+     <div>
+        <p>你点击了 <span id="value">${store.getState()}</span></p>
+        <button id="add1" onclick="add1()">+1</button>
+        <button id="minus1" onclick="add2()">+2</button>
+        <button id="odd1" onclick="odd1()">单数+1</button>
+        <button id="sec1" onclick="sec1()">两秒后+1</button>
+     </div>
+    `;
+	};
+	//2.根据action的类型生成心得state，并触发一个事件
+	const stateChanger=(state, action) => {
+		if (state === undefined) {return 0;}else {
+			if (action.type !== 'add') { return state;}else {
+				return state + action.payload;
+			}
+		}
+	};
+	const store=Redux.createStore(stateChanger);
+	render(store);
+	//3.接收事件，重新render
+	store.subscribe(() => {render(store);});
+
+</script>
+</body>
+</html>
